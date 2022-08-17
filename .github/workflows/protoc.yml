@@ -64,7 +64,7 @@ jobs:
         id: release
         uses: ncipollo/release-action@v1
         with:
-          tag: ${{ steps.tag_version.outputs.new_tag }}
-          name: Release ${{ steps.tag_version.outputs.new_tag }}
-          body: ${{ steps.tag_version.outputs.changelog }}
+          tag: ${{ steps.bump_version.outputs.new_tag }}
+          name: Release ${{ steps.bump_version.outputs.new_tag }}
+          body: ${{ steps.bump_version.outputs.changelog }}
 
