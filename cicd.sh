@@ -234,7 +234,10 @@ golang()
         /protos/helloworld.proto"
 
     # Go module
+    if [ $ACTION = false ]
+    then
     cd $(pwd)/src/golang ; go mod tidy &&  go mod vendor
+    fi
 
     status_check $?
     echo ""
@@ -259,7 +262,10 @@ dart()
         --dart_out=grpc:/src/dart/lib/ "
 
     # pub get
+    if [ $ACTION = false ]
+    then
     cd $(pwd)/src/dart ; dart pub get
+    fi
 
     status_check $?
     echo ""
