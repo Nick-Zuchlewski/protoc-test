@@ -1,0 +1,27 @@
+name: build
+
+on: 
+  workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # This should be captured by script later
+      # https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry
+      - name: Docker Login to GHCR
+        id: build_push
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      # Will build and push
+      # NOTE: The dockerfile can leverage --platform for CC.
+      - name: Build and Push
+        run : |
+          ./cicd.sh -axp

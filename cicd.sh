@@ -17,7 +17,7 @@ readonly CONTAINER_BUILDER_DOCKER="docker"
 readonly CONTAINER_BUILDER_BUILDKIT="buildkit"
 # Defaults
 readonly DEFAULT_CONTAINER_REGISTRY="ghcr.io"
-readonly DEFAULT_CONTAINER_REGISTRY_REPO="nationaloilwellvarco/auredia-hmi-grpc"
+readonly DEFAULT_CONTAINER_REGISTRY_REPO="nick-zuchlewski"
 readonly DEFAULT_GOLANG_BASE_IMAGE="golang:1.19.0-bullseye"
 readonly DEFAULT_PROTOBUF_IMAGE_NAME="auredia-protobuf"
 readonly DEFAULT_PROTOBUF_IMAGE_VERSION="v1.0.0" # TODO: This needs to be auto

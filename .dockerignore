@@ -1,0 +1,8 @@
+.gitignore
+.gitattributes
+.vscode
+.github
+docs
+src
+README.md
+cicd.sh
