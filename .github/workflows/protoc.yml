@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  generation:
+  protoc:
     runs-on: ubuntu-latest
     permissions:
       packages: read
@@ -33,18 +33,6 @@ jobs:
         id: pull_protoc
         run : |
           ./cicd.sh -argd
-
-  release:
-    needs: [generation]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-
-          # Checkout
-      - name: Checkout repository
-        uses: actions/checkout@v2
 
       # Auto Commit
       # https://github.com/stefanzweifel/git-auto-commit-action
