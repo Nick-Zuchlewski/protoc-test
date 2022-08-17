@@ -13,7 +13,8 @@ jobs:
   protoc:
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      packages: read
+      contents: read/write
     steps:
 
       # Checkout
@@ -38,7 +39,7 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
-      contents: write
+      contents: read/write
     steps:
 
       # Auto Commit
