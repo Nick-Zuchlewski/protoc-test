@@ -1,0 +1,168 @@
+#syntax=docker/dockerfile:1.2
+#---------------------------------------------------------------------------------------------------
+# Build
+# Descrption: This dockerfile is responsible building the production image.
+# NOTE: This file is broken into sections and not stages
+# REVIEW: Should probably also specify binary paths
+#---------------------------------------------------------------------------------------------------
+
+# declare arguments with defaults
+# Docker - The images used
+# ARG DOCKER_BUILD_IMAGE=golang:1.19.0-bullseye
+ARG DOCKER_BUILD_IMAGE=debian:bullseye
+# APP - Meta info about the application/container
+ARG GIT_COMMIT=unspecified
+ARG TITLE=unspecified 
+ARG VERSION=unspecified
+ARG MAINTAINERS="Nick.Zuchlewski@nov.com"
+# Proto - Proto related parameters
+ARG PROTOBUF_URL="https://github.com/protocolbuffers/protobuf/releases"
+ARG PROTOBUF_VERSION="3.15.8"
+ARG PROTOBUF_ARCHOS="linux-x86_64"
+ARG PROTOBUF_ZIP="protoc-${PROTOBUF_VERSION}-${PROTOBUF_ARCHOS}.zip"
+# Golang
+ARG GOLANG_VERSION="1.19"
+ARG GOLANG_ARCHOS="linux-amd64"
+ARG GOLANG_PROTOC_GEN_VERSION="1.28"
+ARG GOLANG_PROTOC_GEN_GRPC_VERSION="1.2"
+# Dartlang
+ARG DARTLANG_ARCHOS="amd64"
+ARG DARTLANG_VERSION="2.17.6-1"
+# Dot NET
+ARG DOTNET_ARCHOS="linux-x64"
+ARG DOTNET_VERSION="6.0.400"
+ARG DOTNET_HASH="cd0d0a4d-2a6a-4d0d-b42e-dfd3b880e222/008a93f83aba6d1acf75ded3d2cfba24"
+ARG DOTNET_URL="https://download.visualstudio.microsoft.com/download/pr/${DOTNET_HASH}/dotnet-sdk-${DOTNET_VERSION}-${DOTNET_ARCHOS}.tar.gz"
+
+#---------------------------------------------------------------------------------------------------
+# Section: protobuf
+# Description: Performs the "manual install" of protobuf
+#---------------------------------------------------------------------------------------------------
+# protobuf stage
+FROM ${DOCKER_BUILD_IMAGE} AS protobuf 
+
+# Declare args in scope
+ARG GIT_COMMIT
+ARG PROTOBUF_URL
+ARG PROTOBUF_VERSION
+ARG PROTOBUF_ARCHOS
+ARG PROTOBUF_ZIP
+
+# Set the Debian interactive dialogue
+# Explanation: https://www.cyberciti.biz/faq/explain-debian_frontend-apt-get-variable-for-ubuntu-debian/
+ENV DEBIAN_FRONTEND=${DEBIAN_FRONTEND}
+
+# Get OS dependencies
+RUN apt-get update && \
+  apt-get install -y --no-install-recommends \
+  ca-certificates \
+  apt-transport-https \
+  unzip \
+  curl \
+  wget
+
+# Get Protobuff and Install
+# Official: https://grpc.io/docs/protoc-installation/
+RUN curl -LO ${PROTOBUF_URL}/download/v${PROTOBUF_VERSION}/${PROTOBUF_ZIP} \
+  && unzip ${PROTOBUF_ZIP} -d /usr/local \
+  && rm ${PROTOBUF_ZIP}
+
+# Confirm Version
+RUN protoc --version
+
+#---------------------------------------------------------------------------------------------------
+# Section: Golang
+# Description: Performs the "manual install" of Golang
+#---------------------------------------------------------------------------------------------------
+
+# Declare args in scope
+ARG GOLANG_VERSION
+ARG GOLANG_ARCHOS
+ARG GOLANG_PROTOC_GEN_VERSION
+ARG GOLANG_PROTOC_GEN_GRPC_VERSION
+
+# Install Golang
+RUN wget -c https://golang.org/dl/go${GOLANG_VERSION}.${GOLANG_ARCHOS}.tar.gz \
+  && tar -C /usr/local -xvzf go${GOLANG_VERSION}.${GOLANG_ARCHOS}.tar.gz \
+  && rm go${GOLANG_VERSION}.${GOLANG_ARCHOS}.tar.gz
+
+# Set Envs
+ENV PATH=$PATH:/usr/local/go/bin
+ENV GOPATH=$HOME/go
+ENV PATH=$PATH:$GOPATH/bin
+
+# Install Golang Proto Plugins
+# https://grpc.io/docs/languages/go/quickstart/
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v${GOLANG_PROTOC_GEN_VERSION} \
+  && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v${GOLANG_PROTOC_GEN_GRPC_VERSION}
+
+# Confirm Version
+RUN go version
+
+#---------------------------------------------------------------------------------------------------
+# Section: Dart
+# Description: Performs the "manual install" of Dart
+# Official Instructions: https://dart.dev/get-dart
+#---------------------------------------------------------------------------------------------------
+
+# Declare args in scope
+ARG DARTLANG_ARCHOS
+ARG DARTLANG_VERSION
+
+# Install Dartlang
+RUN wget -c https://storage.googleapis.com/dart-archive/channels/stable/release/latest/linux_packages/dart_${DARTLANG_VERSION}_${DARTLANG_ARCHOS}.deb \
+  && dpkg -i dart_${DARTLANG_VERSION}_${DARTLANG_ARCHOS}.deb \
+  && rm dart_${DARTLANG_VERSION}_${DARTLANG_ARCHOS}.deb
+
+# Set Envs
+ENV PATH=$PATH:/usr/lib/dart/bin
+
+# Install/Activate protoc plugin
+# https://grpc.io/docs/languages/dart/quickstart/
+RUN dart pub global activate protoc_plugin
+ENV PATH=$PATH:/root/.pub-cache/bin
+
+# Confirm Version
+RUN dart --version
+
+#---------------------------------------------------------------------------------------------------
+# Section: .NET
+# Description: Performs the "manual install" of .NET
+#---------------------------------------------------------------------------------------------------
+
+# Declare args in scope
+ARG DOTNET_ARCHOS
+ARG DOTNET_VERSION
+ARG DOTNET_URL
+
+# Install Dot NET
+RUN wget -c ${DOTNET_URL} \
+  && mkdir /usr/local/dotnet \
+  && tar -C /usr/local/dotnet -xvzf dotnet-sdk-${DOTNET_VERSION}-${DOTNET_ARCHOS}.tar.gz \
+  && rm dotnet-sdk-${DOTNET_VERSION}-${DOTNET_ARCHOS}.tar.gz
+
+# Set Envs
+ENV DOTNET_ROOT=/usr/local/dotnet
+ENV PATH=$PATH:/usr/local/dotnet
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+
+# Confirm Version
+RUN dotnet --version
+
+#---------------------------------------------------------------------------------------------------
+# Section: Labels
+#---------------------------------------------------------------------------------------------------
+
+# Declare args in scope
+ARG TITLE
+ARG VERSION
+ARG MAINTAINERS
+ARG GIT_COMMIT
+
+LABEL commit=${GIT_COMMIT}
+LABEL protoc_veriosn=${PROTOBUF_VERSION}
+
+# Set labels for oci
+LABEL org.opencontainers.image.title=${TITLE}
+LABEL org.opencontainers.image.description=${DESCRIPTION}
+LABEL org.opencontainers.image.authors=${MAINTAINERS}

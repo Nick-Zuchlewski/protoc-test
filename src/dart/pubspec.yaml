@@ -1,0 +1,9 @@
+environment:
+  sdk: '>=2.10.0 <3.0.0'
+
+name: hmi_grpc
+description: hmi_grpc
+version: 0.0.1
+author: nick.zuchlewski@gmail.com
+
+dependencies:
