@@ -234,10 +234,10 @@ golang()
         /protos/helloworld.proto"
 
     # Go module
-    if [ $ACTION = false ]
-    then
-    cd $(pwd)/src/golang ; go mod tidy &&  go mod vendor
-    fi
+    docker run --rm \
+        -v $(pwd)/src/golang:/src/golang \
+        -exec $PROTOBUF_IMAGE_FULL bash -c \
+        "cd /src/golang ; go mod tidy &&  go mod vendor"
 
     status_check $?
     echo ""
@@ -261,11 +261,11 @@ dart()
         && protoc -I=protos protos/helloworld.proto \
         --dart_out=grpc:/src/dart/lib/ "
 
-    # pub get
-    if [ $ACTION = false ]
-    then
-    cd $(pwd)/src/dart ; dart pub get
-    fi
+    # pub get 
+    docker run --rm \
+        -v $(pwd)/src/dart:/src/dart \
+        -exec $PROTOBUF_IMAGE_FULL bash -c \
+        "cd /src/dart ; dart pub get"
 
     status_check $?
     echo ""
