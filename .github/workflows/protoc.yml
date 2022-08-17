@@ -49,6 +49,7 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Automated Change
+        run : ls -al
 
       # Bump the version and tag it 
       # https://github.com/marketplace/actions/github-tag
@@ -67,4 +68,5 @@ jobs:
           tag: ${{ steps.bump_version.outputs.new_tag }}
           name: Release ${{ steps.bump_version.outputs.new_tag }}
           body: ${{ steps.bump_version.outputs.changelog }}
+          # TODO: Should only release the artifacts
 
