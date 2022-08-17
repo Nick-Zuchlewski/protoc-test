@@ -302,7 +302,8 @@ while getopts ":hacxlprgd" options; do
     case $options in
         h ) usage ;;        # usage (help)
         a ) about ;;        # about
-        c ) clean ;;        # clean
+        # TODO: Clean files
+        c ) clean ;;        # clean #TODO: either just clean docker or clean all.
         x ) build ;;        # builds the image
         l ) login ;;        # login into registry
         p ) push ;;         # pull image

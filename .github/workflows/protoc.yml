@@ -10,7 +10,7 @@ on:
       - main
 
 jobs:
-  protoc:
+  generation:
     runs-on: ubuntu-latest
     permissions:
       packages: read
@@ -34,8 +34,8 @@ jobs:
         run : |
           ./cicd.sh -argd
 
-  to_main:
-    needs: [protoc]
+  release:
+    needs: [generation]
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
