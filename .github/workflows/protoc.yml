@@ -42,6 +42,10 @@ jobs:
       contents: write
     steps:
 
+          # Checkout
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       # Auto Commit
       # https://github.com/stefanzweifel/git-auto-commit-action
       - name: Auto Commit
