@@ -25,6 +25,7 @@ ARG GOLANG_VERSION="1.19"
 ARG GOLANG_ARCHOS="linux-amd64"
 ARG GOLANG_PROTOC_GEN_VERSION="1.28"
 ARG GOLANG_PROTOC_GEN_GRPC_VERSION="1.2"
+ARG GOLANG_PROTOC_GEN_LINT="0.2.4"
 # Dartlang
 ARG DARTLANG_ARCHOS="amd64"
 ARG DARTLANG_VERSION="2.17.6-1"
@@ -80,6 +81,7 @@ ARG GOLANG_VERSION
 ARG GOLANG_ARCHOS
 ARG GOLANG_PROTOC_GEN_VERSION
 ARG GOLANG_PROTOC_GEN_GRPC_VERSION
+ARG GOLANG_PROTOC_GEN_LINT
 
 # Install Golang
 RUN wget -c https://golang.org/dl/go${GOLANG_VERSION}.${GOLANG_ARCHOS}.tar.gz \
@@ -94,7 +96,8 @@ ENV PATH=$PATH:$GOPATH/bin
 # Install Golang Proto Plugins
 # https://grpc.io/docs/languages/go/quickstart/
 RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@v${GOLANG_PROTOC_GEN_VERSION} \
-  && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v${GOLANG_PROTOC_GEN_GRPC_VERSION}
+  && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v${GOLANG_PROTOC_GEN_GRPC_VERSION} \
+  && go install github.com/ckaznocha/protoc-gen-lint@v${GOLANG_PROTOC_GEN_LINT}
 
 # Confirm Version
 RUN go version

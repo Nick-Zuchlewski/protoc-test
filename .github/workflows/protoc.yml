@@ -29,10 +29,10 @@ jobs:
           echo ${{ secrets.GITHUB_TOKEN }} | docker login -u ${{ github.repository_owner }} ghcr.io --password-stdin
 
       # Pull the image and generate for golang and dart
-      - name: Pull and Generate
+      - name: Pull, Lint, and Generate
         id: pull_protoc
         run : |
-          ./cicd.sh -argd
+          ./cicd.sh -arlgd
 
       # Auto Commit
       # https://github.com/stefanzweifel/git-auto-commit-action

@@ -107,7 +107,8 @@ usage()
     echo "-h for help"
     echo "-a for About - Logs meta info std out"
     echo "-x for Build - Builds the image"
-    echo "-l for Login - Log into container registry"
+    echo "-l for lint - Will lint the proto file(s)"    
+    echo "-z for Login - Log into container registry"
     echo "-g for Pull - Pull image"
     echo "-r for Push - Push image"
     echo "-g for Golang - Generates Golang"
@@ -212,6 +213,27 @@ pull()
 }
 
 #-----------------------------------------------------------------------------------------
+# lint
+# Description: Will generate the artifacts from the image
+# Official: https://grpc.io/docs/languages/go/basics/
+#-----------------------------------------------------------------------------------------
+lint()
+{
+    echo "linting proto file(s)"
+
+    # build
+    docker run --rm \
+        -v $(pwd)/protos:/protos \
+        -exec $PROTOBUF_IMAGE_FULL bash -c \
+        "protoc --version \
+        && protoc --lint_out=. protos/*.proto"
+    status_check $?
+
+    echo ""
+}
+
+
+#-----------------------------------------------------------------------------------------
 # golang
 # Description: Will generate the artifacts from the image
 # Official: https://grpc.io/docs/languages/go/basics/
@@ -219,8 +241,6 @@ pull()
 golang()
 {
     echo "Generating Golang from container"
-
-    # REVIEW proto lint
 
     # clean the dir
     mkdir -p $(pwd)/src/golang/pb/
@@ -316,7 +336,8 @@ while getopts ":hacxlprgd" options; do
         a ) about ;;        # about
         c ) clean ;;        # clean
         x ) build ;;        # builds the image
-        l ) login ;;        # login into registry
+        l ) lint ;;         # lint the proto
+        z ) login ;;        # login into registry
         p ) push ;;         # pull image
         r ) pull ;;         # push image
         g ) golang ;;       # generates Golang
