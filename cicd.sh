@@ -222,6 +222,11 @@ golang()
 
     # REVIEW proto lint
 
+    # clean the dir
+    mkdir -p $(pwd)/src/golang/pb/
+    rm -f $(pwd)/src/golang/pb/*
+    status_check $?
+
     # build
     docker run --rm \
         -v $(pwd)/protos:/protos \
@@ -232,14 +237,15 @@ golang()
         --go_out=./src/golang/pb --go_opt=paths=source_relative \
         --go-grpc_out=./src/golang/pb --go-grpc_opt=paths=source_relative \
         /protos/helloworld.proto"
+    status_check $?
 
     # Go module
     docker run --rm \
         -v $(pwd)/src/golang:/src/golang \
         -exec $PROTOBUF_IMAGE_FULL bash -c \
         "cd /src/golang ; go mod tidy &&  go mod vendor"
-
     status_check $?
+
     echo ""
 }
 
@@ -252,6 +258,11 @@ dart()
 {
     echo "Generating Dart from container"
 
+    # clean the dir
+    mkdir -p $(pwd)/src/dart/lib
+    rm -f $(pwd)/src/dart/lib/*
+    status_check $?
+
     # build
     docker run --rm \
         -v $(pwd)/protos:/protos \
@@ -260,14 +271,15 @@ dart()
         "protoc --version \
         && protoc -I=protos protos/helloworld.proto \
         --dart_out=grpc:/src/dart/lib/ "
+    status_check $?
 
     # pub get 
     docker run --rm \
         -v $(pwd)/src/dart:/src/dart \
         -exec $PROTOBUF_IMAGE_FULL bash -c \
         "cd /src/dart ; dart pub get"
-
     status_check $?
+
     echo ""
 }
 
@@ -302,8 +314,7 @@ while getopts ":hacxlprgd" options; do
     case $options in
         h ) usage ;;        # usage (help)
         a ) about ;;        # about
-        # TODO: Clean files
-        c ) clean ;;        # clean #TODO: either just clean docker or clean all.
+        c ) clean ;;        # clean
         x ) build ;;        # builds the image
         l ) login ;;        # login into registry
         p ) push ;;         # pull image

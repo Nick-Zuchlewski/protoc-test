@@ -3,7 +3,7 @@ environment:
 
 name: hmi_grpc
 description: hmi_grpc
-version: 0.0.1
+# version: 0.0.1
 author: nick.zuchlewski@gmail.com
 
 dependencies:
