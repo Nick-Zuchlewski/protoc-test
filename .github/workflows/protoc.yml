@@ -2,8 +2,6 @@ name: protoc
 
 on:
   pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
@@ -37,7 +35,7 @@ jobs:
       # https://github.com/stefanzweifel/git-auto-commit-action
       - name: Auto Commit
         id: auto_commit
-        if: github.ref != 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
         uses: stefanzweifel/git-auto-commit-action@v4
         with:
           commit_message: Automated Change
@@ -46,7 +44,7 @@ jobs:
       # https://github.com/remorses/bump-version
       - name: Bump versions
         id: bum_version
-        if: github.ref != 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
         uses: remorses/bump-version@js
         with:
             version_file: ./version.txt
