@@ -11,7 +11,7 @@ import 'package:protobuf/protobuf.dart' as $pb;
 
 class HelloRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'HelloRequest', createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'name')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'name')
     ..hasRequiredFields = false
   ;
 
@@ -46,14 +46,14 @@ class HelloRequest extends $pb.GeneratedMessage {
   static HelloRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<HelloRequest>(create);
   static HelloRequest? _defaultInstance;
 
-  @$pb.TagNumber(1)
+  @$pb.TagNumber(2)
   $core.String get name => $_getSZ(0);
-  @$pb.TagNumber(1)
+  @$pb.TagNumber(2)
   set name($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
+  @$pb.TagNumber(2)
   $core.bool hasName() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearName() => clearField(1);
+  @$pb.TagNumber(2)
+  void clearName() => clearField(2);
 }
 
 class HelloReply extends $pb.GeneratedMessage {
