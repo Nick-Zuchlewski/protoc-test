@@ -293,12 +293,12 @@ dart()
         --dart_out=grpc:/src/dart/lib/ "
     status_check $?
 
-    # pub get 
-    docker run --rm \
-        -v $(pwd)/src/dart:/src/dart \
-        -exec $PROTOBUF_IMAGE_FULL bash -c \
-        "cd /src/dart ; dart pub get"
-    status_check $?
+    # # pub get 
+    # docker run --rm \
+    #     -v $(pwd)/src/dart:/src/dart \
+    #     -exec $PROTOBUF_IMAGE_FULL bash -c \
+    #     "cd /src/dart ; dart pub get"
+    # status_check $?
 
     echo ""
 }
