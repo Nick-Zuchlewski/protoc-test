@@ -32,7 +32,7 @@ jobs:
           ./cicd.sh -arlgd
 
       # Auto Commit
-      # https://github.com/stefanzweifel/git-auto-commit-action
+      # https://github.com/stefanzweifel/git-auto-commit-action x
       - name: Auto Commit
         id: auto_commit
         if: github.ref == 'refs/heads/main'
